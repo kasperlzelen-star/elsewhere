@@ -22,6 +22,18 @@ function review(edition, proposal, overrides = {}) {
     steward: "A chosen display name", applyArrangement: false, ...overrides
   });
 }
+// Generated diagnostics only; these fixtures are not participant or steward accounts.
+function simulatedReview(edition, offerOptions = {}, reviewOptions = {}) {
+  const proposal = offer(edition, {
+    text: "Simulated edition consistency diagnostic.", origin: "software",
+    processNote: "Generated regression fixture, not a real participant contribution.",
+    ...offerOptions
+  });
+  return review(edition, proposal, {
+    reason: "Simulated local regression decision.", steward: "Simulated test steward",
+    ...reviewOptions
+  });
+}
 function fails(operation, pattern) {
   assert.throws(operation, (e) => {
     assert.equal(e.name, "ValidationError");
@@ -240,6 +252,119 @@ test("stale offers and same-id/version forks are rejected using exact content fi
   fails(() => review(historyFork, nextOffer), /exact edition/);
   const reused = offer(next, { offerId: p.offerId });
   fails(() => review(next, reused), /already been reviewed/);
+});
+
+test("reviewed editions bind their parent fingerprint to the latest review's exact base", () => {
+  for (const decision of ["accepted", "held", "declined"]) {
+    const e = simulatedReview(seed(), {}, { decision });
+    assert.equal(Core.validateEdition(e).ok, true);
+    const bad = copy(e);
+    bad.parentFingerprint = "sha256:" + "0".repeat(64);
+    const before = copy(bad);
+    assert.notEqual(bad.parentFingerprint, bad.history.at(-1).offer.baseFingerprint);
+    const result = Core.validateEdition(bad);
+    assert.equal(result.ok, false, decision);
+    assert.match(result.errors.join(" "), /parentFingerprint/);
+    assert.deepEqual(bad, before, "Rejection does not repair or alter imported data.");
+    assert.equal(Core.validateSession({ schemaVersion: 1, edition: bad, edges: [] }).ok, false);
+    fails(() => Core.fingerprint(bad), /parentFingerprint/);
+    fails(() => Core.makeSession(bad), /parentFingerprint/);
+    fails(() => offer(bad), /parentFingerprint/);
+    fails(() => review(bad, offer(e)), /parentFingerprint/);
+
+    const changedBase = copy(e);
+    changedBase.history.at(-1).offer.baseFingerprint = "sha256:" + "1".repeat(64);
+    changedBase.selectedMaterial = copy(changedBase.history.filter((entry) => entry.decision === "accepted"));
+    assert.equal(Core.validateEdition(changedBase).ok, false, "Changing only the recorded base also breaks the relationship.");
+  }
+});
+
+test("current paths follow the latest applied arrangement through later unapplied, held and declined offers", () => {
+  const appliedEdges = [["clearing", "grove"], ["garden", "pool"]];
+  const otherEdges = [["pool", "grove"]];
+  let e = simulatedReview(seed(), {
+    kind: "arrangement", includeArrangement: true, edges: appliedEdges, adaptConsent: true
+  }, { applyArrangement: true });
+  for (const decision of ["accepted", "held", "declined"]) {
+    e = simulatedReview(e, {
+      kind: "arrangement", includeArrangement: true, edges: otherEdges, adaptConsent: false
+    }, { decision, applyArrangement: false });
+    assert.equal(Core.validateEdition(e).ok, true, decision);
+    assert.deepEqual(e.edges, Core.canonicalEdges(appliedEdges));
+    assert.equal(e.history.at(-1).offer.adaptConsent, false);
+    assert.equal(e.history.at(-1).appliedArrangement, false);
+    const bad = copy(e); bad.edges = copy(otherEdges);
+    const result = Core.validateEdition(bad);
+    assert.equal(result.ok, false, "An unapplied offer cannot replace paths: " + decision);
+    assert.match(result.errors.join(" "), /edges/);
+  }
+  const next = simulatedReview(e, {
+    kind: "arrangement", includeArrangement: true, edges: otherEdges, adaptConsent: true
+  }, { applyArrangement: true });
+  assert.equal(Core.validateEdition(next).ok, true);
+  assert.deepEqual(next.edges, Core.canonicalEdges(otherEdges));
+  const outdated = copy(next); outdated.edges = copy(appliedEdges);
+  assert.equal(Core.validateEdition(outdated).ok, false, "An older applied arrangement cannot override the latest one.");
+});
+
+test("an explicitly applied empty arrangement remains authoritative after a later held review", () => {
+  let e = simulatedReview(seed(), {
+    kind: "arrangement", includeArrangement: true, edges: [], adaptConsent: true
+  }, { applyArrangement: true });
+  e = simulatedReview(e, {}, { decision: "held" });
+  assert.equal(Core.validateEdition(e).ok, true);
+  assert.deepEqual(e.edges, []);
+  const bad = copy(e); bad.edges = copy(seed().edges);
+  assert.equal(Core.validateEdition(bad).ok, false);
+});
+
+test("consistency checks preserve canonical undirected paths and legitimate seed forks", () => {
+  const e = simulatedReview(seed(), {
+    kind: "arrangement", includeArrangement: true,
+    edges: [["clearing", "grove"], ["garden", "pool"]], adaptConsent: true
+  }, { applyArrangement: true });
+  const reordered = copy(e);
+  const reverse = (edges) => edges.slice().reverse().map((edge) => edge.slice().reverse());
+  reordered.edges = reverse(reordered.edges);
+  for (const entry of reordered.history.concat(reordered.selectedMaterial))
+    if (entry.offer.includeArrangement) entry.offer.edges = reverse(entry.offer.edges);
+  assert.equal(Core.validateEdition(reordered).ok, true);
+  assert.equal(Core.fingerprint(reordered), Core.fingerprint(e));
+
+  const fork = seed(); fork.edges = [["pool", "grove"]];
+  assert.equal(Core.validateEdition(fork).ok, true, "Seed geometry is editable and has no claimed applied history.");
+  const next = simulatedReview(fork, {
+    kind: "arrangement", includeArrangement: true, edges: [], adaptConsent: false
+  });
+  assert.equal(Core.validateEdition(next).ok, true);
+  assert.deepEqual(next.edges, Core.canonicalEdges(fork.edges));
+  assert.equal(next.history[0].offer.adaptConsent, false);
+  assert.equal(next.history[0].appliedArrangement, false);
+  assert.equal(Core.makeSession(next, []).edition.id, next.id);
+});
+
+test("malformed reviewed records return validation errors without throwing while checking consistency", () => {
+  const e = simulatedReview(seed(), {
+    kind: "arrangement", includeArrangement: true, edges: [], adaptConsent: true
+  }, { applyArrangement: true });
+  const malformed = [null, [], {}, { ...e, edges: null }, { ...e, history: null },
+    { ...e, history: [null] }, { ...e, history: [7] },
+    { ...e, selectedMaterial: null }, { ...e, history: [{ ...e.history[0], offer: null }] },
+    { ...e, history: [{ ...e.history[0], offer: {} }] },
+    { ...e, history: [{ ...e.history[0], appliedArrangement: "true" }] }];
+  const badEdges = copy(e); badEdges.history[0].offer.edges = null;
+  badEdges.selectedMaterial = copy(badEdges.history); malformed.push(badEdges);
+  for (const raw of malformed) {
+    for (const validate of [
+      () => Core.validateEdition(raw),
+      () => Core.validateSession({ schemaVersion: 1, edition: raw, edges: [] })
+    ]) {
+      let result;
+      assert.doesNotThrow(() => { result = validate(); });
+      assert.equal(result.ok, false);
+      assert.ok(result.errors.length);
+    }
+  }
 });
 
 test("strict schemas reject extra keys, pollution, executable properties, cycles and oversized material", () => {
