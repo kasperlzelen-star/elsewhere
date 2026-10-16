@@ -303,6 +303,16 @@
       if (stable(e.selectedMaterial) !== stable(accepted))
         errors.push(path + ".selectedMaterial must preserve every accepted review entry in order");
     }
+    // Compare only structurally valid records. These relationships do not
+    // authenticate the review chain or the permissions asserted within it.
+    if (!errors.length && e.history.length) {
+      var latest = e.history[e.history.length - 1];
+      if (e.parentFingerprint !== latest.offer.baseFingerprint)
+        errors.push(path + ".parentFingerprint must match the latest history offer's baseFingerprint");
+      var applied = e.history.filter(function (entry) { return entry.appliedArrangement; }).pop();
+      if (applied && stable(orderedEdges(e.edges)) !== stable(orderedEdges(applied.offer.edges)))
+        errors.push(path + ".edges must match the latest explicitly applied arrangement in history");
+    }
   }
   function result(raw, maxBytes, check) {
     var errors = dataErrors(raw, maxBytes);
