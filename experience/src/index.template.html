@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="A Way Through — an ELSEWHERE encounter. Wander, explore relationships, or freely offer something for a later edition.">
+<meta name="author" content="weidu">
+__CSP__
+<title>A Way Through · ELSEWHERE</title>
+<link rel="icon" href="data:,">
+<style>__STYLE__</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the encounter</a>
+<div class="shell">
+ <header class="masthead">
+  <div class="identity"><a class="brand" href="https://weidufanling.au/elsewhere/">ELSEWHERE</a><span class="byline">weidu · the collective ghost writer</span></div>
+  <div class="edition"><strong>A WAY THROUGH · 0.1</strong><span>Working encounter / 16 October 2026</span></div>
+ </header>
+ <div class="edition-strip"><span id="edition-label"></span><button class="text-button" id="open-edition">Open another edition</button></div>
+ <nav class="mode-nav" aria-label="Choose an entrance">
+  <button data-mode="wander" aria-current="page">Wander</button>
+  <button data-mode="relationships">Relationships</button>
+  <button data-mode="offer">Keep or offer</button>
+  <button data-mode="history">Shared history</button>
+  <button data-mode="steward">Steward desk</button>
+  <button class="quiet-button" id="leave">Leave quietly ↗</button>
+ </nav>
+ <main id="main" tabindex="-1">
+  <section data-view="wander" aria-labelledby="wander-title">
+   <div class="intro"><p class="eyebrow">ONE PLACE / DIFFERENT WAYS IN</p><h1 id="wander-title" tabindex="-1">A way through.<br><em>Or a place to stay.</em></h1><p class="lede">A small fictional place. Change a path, follow a relationship, or let it be. Nothing here needs to become useful.</p></div>
+   <div class="two-column">
+    <div class="panel map-panel"><div class="panel-heading"><h2>Your arrangement</h2><span class="small-label">PRIVATE UNTIL YOU CHOOSE</span></div><div id="wander-map" class="map-wrap"></div><p class="map-legend">Choose a place on the map or in the list. Solid lines are paths. The highlighted circle marks your starting place.</p><div class="control-row"><button data-action="undo" disabled>Undo a path change</button><button data-action="restore">Restore this edition</button></div></div>
+    <div class="panel"><p class="eyebrow">MAKE OR WANDER</p><h2>Which paths might be here?</h2><p>Each choice changes your own arrangement. The shared edition stays as it was.</p><label for="start-place">Start from</label><select id="start-place" data-start></select><div id="wander-paths" class="path-list"></div><p class="notice">A path here is simply a connection in a fictional map. Its presence says nothing about real terrain, physical access or permission to travel.</p></div>
+   </div>
+   <div class="question-card"><p class="eyebrow">AN INVITATION, IF YOU WANT ONE</p><h2 id="question-title">What becomes possible between places?</h2><p id="question-text">Try a different connection. Or stay with this arrangement without explaining it.</p><div class="control-row"><button id="another-question">Another way of looking</button><button data-mode="relationships">Explore the relationships ↗</button></div><p class="small-label">Original prompts · no named person or imagined being is speaking here.</p></div>
+  </section>
+  <section data-view="relationships" hidden aria-labelledby="relationships-title">
+   <div class="intro"><p class="eyebrow">ANOTHER ENTRANCE / THE SAME ARRANGEMENT</p><h1 id="relationships-title" tabindex="-1">Follow a relationship.</h1><p class="lede">A mathematical view can reveal a connection or a counterexample. Some things a map cannot tell us.</p></div>
+   <div class="two-column">
+    <div class="panel"><h2>Places and paths, in words</h2><label for="relation-start">Explore from</label><select id="relation-start" data-start></select><div id="relationship-paths" class="path-list"></div><div class="control-row"><button data-action="undo" disabled>Undo a path change</button><button data-action="restore">Restore this edition</button></div><h3>Routes from this place</h3><ul id="route-results"></ul></div>
+    <div class="panel"><p class="eyebrow">A QUESTION TO TRY</p><h2>What if one path closed?</h2><p>This temporary thought experiment leaves your arrangement unchanged.</p><label for="trial-path">Imagine a path is closed</label><select id="trial-path"><option value="">All current paths open</option></select><div id="analysis-results" aria-live="polite"></div><div id="relationship-map" class="map-wrap small-map"></div><p class="notice">These results describe an undirected graph: every path works both ways and every step counts equally. They do not establish fairness, safety, accessibility or ecological benefit.</p></div>
+   </div>
+   <details><summary>What this representation leaves open</summary><p>A short route can still be unsuitable for a person. A connected garden can still be a poor habitat. Someone absent from this encounter may carry a burden we have not noticed. Such questions deserve testimony, appropriate evidence and further inquiry.</p><p>No arrangement earns a score. A mathematical result is one way of attending to the place.</p></details>
+  </section>
+  <section data-view="offer" hidden aria-labelledby="offer-title">
+   <div class="intro"><p class="eyebrow">CONTINUITY / WITHOUT OBLIGATION</p><h1 id="offer-title" tabindex="-1">Keep a trace.<br><em>Offer only what you choose.</em></h1><p class="lede">Keeping something on your device is private. Offering it for another encounter is a separate decision.</p></div>
+   <div class="panel"><h2>Keep this arrangement for yourself</h2><p>A private encounter file contains this edition and your paths. It contains none of the words in the offer form below. Nothing is saved automatically.</p><div class="control-row"><button id="save-session">Save a private encounter</button><button id="open-session">Reopen a private encounter</button></div></div>
+   <div class="panel"><h2>Prepare an offer</h2><p>A question, pattern, objection, repair or request to leave something alone can travel to a later encounter. You may leave this form empty and go.</p>
+    <form id="offer-form">
+     <div class="field-grid"><div class="field"><label for="offer-kind">What are you offering?</label><select id="offer-kind"><option value="question">A question</option><option value="play">Something made in play</option><option value="care">An observation or possible repair</option><option value="note">A note or request to preserve something</option><option value="arrangement">An arrangement</option></select></div><div class="field"><label for="offer-attribution">Public credit, if you want it</label><input id="offer-attribution" maxlength="60" autocomplete="off" placeholder="A chosen name, or leave blank"></div></div>
+     <label for="offer-text">The words you choose to offer</label><textarea id="offer-text" maxlength="1000" rows="4" placeholder="A question can remain a question."></textarea>
+     <label class="permission"><input type="checkbox" id="offer-arrangement"> Include my current arrangement of paths</label>
+     <p class="notice">Without that choice, your path changes are left out of the offer. Temporary path-closure experiments are always left out.</p>
+     <label for="offer-origin">How was this made?</label><select id="offer-origin"><option value="human">A person's own contribution</option><option value="assisted">A person with software assistance</option><option value="software">A software-generated contribution</option><option value="imagined">A labelled imagined perspective</option></select>
+     <label for="offer-process">A note about the process <span id="process-needed">(optional)</span></label><input id="offer-process" maxlength="240" autocomplete="off" placeholder="For example, what software helped or whose perspective is being imagined">
+     <label for="offer-backtick">&#96; A backtick: something to attend to before carrying this forward <span>(optional)</span></label><textarea id="offer-backtick" maxlength="400" rows="3" placeholder="Who might carry a burden? What remains unknown? What should stay untouched?"></textarea>
+     <p>The backtick invites attention. It awards no status and certifies no action as good.</p>
+     <fieldset><legend>Your choices about this offer</legend><label class="permission"><input type="checkbox" id="offer-display"> I permit these selected words, credit and any included arrangement to be displayed in a reviewed ELSEWHERE edition.</label><label class="permission"><input type="checkbox" id="offer-adapt"> I also permit this selected material to be adapted into later ELSEWHERE editions, with its chosen credit and origin retained.</label><p>These choices apply to this offer only. A reviewer can preserve a question without adapting it. There is no automatic publication.</p></fieldset>
+     <p class="notice">This is a local file exchange. Downloading an offer sends nothing to weidu. Share the file only through an agreed review arrangement; this preview has no online submission inbox. Material published or downloaded by others may be difficult to withdraw completely. For younger participants, use a supported session and an adult facilitator to arrange any sharing.</p>
+     <div class="control-row"><button class="primary" type="submit">Preview exactly what I am offering</button><button type="button" id="clear-offer">Clear this form</button></div>
+    </form>
+    <div id="offer-preview" class="offer-preview" hidden><h3>Your selected offer</h3><div id="offer-summary"></div><details><summary>Inspect the complete file</summary><pre id="offer-json"></pre></details><button id="download-offer" class="primary">Download this offer file</button><p class="notice">Downloaded to your device. No one else receives it until you choose to share it.</p></div>
+   </div>
+  </section>
+  <section data-view="history" hidden aria-labelledby="history-title">
+   <div class="intro"><p class="eyebrow">A PLACE THAT CAN CONTINUE</p><h1 id="history-title" tabindex="-1">What came before.<br><em>What remains open.</em></h1><p class="lede">A later encounter can carry a chosen contribution and the reasons for a change. It need not settle every question.</p></div>
+   <div class="panel"><h2 id="history-edition-title">This edition</h2><p id="history-edition-detail"></p><div id="edition-differences"></div><div class="control-row"><button id="save-edition">Download this shared edition</button><button id="restore-arrangement">Visit this edition's arrangement</button></div><p class="notice">A downloaded edition is a copy. Credit and review notes are declarations recorded in the file; they do not verify an identity or authenticate a publisher.</p></div>
+   <div id="history-list" class="history-list"></div>
+   <details><summary>How a shared encounter works here</summary><ol><li>Explore privately, through either entrance.</li><li>If you choose, offer selected material and permissions in a file.</li><li>A steward reviews it against the exact edition it responds to.</li><li>The steward prepares a new edition, preserving the offer and the review decision.</li><li>Another participant opens that edition, encounters it differently, and can question or continue it.</li></ol><p>That exchange is manual in this first version. It provides no public feed, messaging service, automatic upload or unattended model participation. The starting edition contains no invented visitor contributions.</p></details>
+  </section>
+  <section data-view="steward" hidden aria-labelledby="steward-title">
+   <div class="intro"><p class="eyebrow">LOOK BACK / BEFORE CARRYING FORWARD</p><h1 id="steward-title" tabindex="-1">Make room for another encounter.</h1><p class="lede">Inspect a deliberately offered file, preserve its choices, and prepare the next edition. Importing it changes nothing.</p></div>
+   <div class="panel"><h2>Review an offer</h2><p>This desk prepares a local draft. It is an editorial tool, open to anyone with a copy; it provides no account permissions or automatic website publishing.</p><div class="control-row"><button id="open-offer">Open an offer file for review</button><button id="close-review" hidden>Close review without carrying anything forward</button></div><div id="review-offer" class="review-offer" hidden></div>
+    <form id="review-form" hidden>
+     <p class="notice">Every recorded decision below retains the complete selected offer in the new edition's history, including an unresolved question or a recorded decline. To leave the offer out entirely, choose “Close review without carrying anything forward”.</p>
+     <label for="review-decision">Your decision for this edition</label><select id="review-decision"><option value="accepted">Carry the offer forward</option><option value="held">Keep the question unresolved in history</option><option value="declined">Record a decline in history, including the offer</option></select>
+     <label class="permission"><input type="checkbox" id="review-apply"> Also use the offered path arrangement in the next edition</label><p id="review-apply-help" class="notice"></p>
+     <label for="review-reason">Why this decision? What remains open?</label><textarea id="review-reason" maxlength="400" rows="4" required></textarea>
+     <label for="review-steward">Steward credit or role</label><input id="review-steward" maxlength="60" required autocomplete="off" placeholder="For example, a chosen name or Workshop steward">
+     <label class="permission"><input type="checkbox" id="review-confirm"> I have read the selected material and permissions, considered its effect on others, and will keep its stated origin visible. This does not verify the contributor's identity.</label>
+     <button type="submit" class="primary">Prepare a new edition for review</button>
+    </form>
+   </div>
+   <div id="next-edition" class="panel" hidden><p class="eyebrow">LOCAL DRAFT / NOT PUBLISHED</p><h2>The next encounter is ready to inspect.</h2><div id="next-summary"></div><div class="control-row"><button id="download-next" class="primary">Download the next edition</button><button id="visit-next">Open it as another encounter</button></div><p>Send the edition file through your agreed arrangement, or open it in a second browser. Publication on weidu is a separate editorial action. This first file format retains at most 24 complete review decisions and then stops; it does not discard earlier credit to make space. Keep the earlier editions available where their permissions allow.</p></div>
+  </section>
+  <section data-view="left" hidden aria-labelledby="left-title"><div class="intro"><p class="eyebrow">NOTHING TO COMPLETE</p><h1 id="left-title" tabindex="-1">You can leave it here.</h1><p class="lede">Nothing has been uploaded or automatically saved. This encounter has no sound, animation loop or background work to keep running.</p><p>The arrangement and form remain in this page's memory until you clear them or close the page. A browser may restore a tab. Leaving is not secure deletion.</p><div class="control-row"><button data-mode="wander">Return to the place</button><a class="button secondary" href="https://weidufanling.au/elsewhere/">Return to ELSEWHERE</a></div></div></section>
+  <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <input type="file" id="file-input" accept=".json,application/json" hidden>
+  <noscript><p class="notice">JavaScript is off. This encounter's interactive field and file exchange are unavailable. You can still read its invitations and the wider ELSEWHERE purpose.</p></noscript>
+ </main>
+ <footer class="footer"><p>weidu · the collective ghost writer</p><p><a href="https://weidufanling.au/elsewhere/">ELSEWHERE</a> · <a href="https://weidufanling.au/uploads/2026/elsewhere-first-clearing-v02.html">First Clearing</a></p><details><summary>Care, privacy and the wider place</summary><p>ELSEWHERE makes room for rest, exploration and voluntary contribution through many ways of encountering the world. These original prompts invite attention to relationships, absence, alternative explanations and repair. No named thinker, ecosystem or unfamiliar intelligence is being impersonated.</p><p>This code has no analytics, cookies, persistent browser storage, account, remote API, external media, model connection or payment. Files open on your device. The hosting service and browser can still keep ordinary request or session records. This is not an anonymity guarantee.</p><p>People with different access needs should help shape further development. Children need suitable supported arrangements for participation and sharing. This prototype has not been validated with all these participants and claims no therapeutic benefit or accessibility certification.</p><p>Current or future software participation requires a separate working connection and defined authority. Mathematical results, generated contributions and imagined accounts remain distinguishable. Considering an unfamiliar system does not require pretending to know its experience.</p><p>For feedback or to arrange a supported review exchange, find <a href="https://bsky.app/profile/weidu-fanling.bsky.social">weidu on Bluesky</a> or <a href="https://micro.blog/OrdinaryGhost">Micro.blog</a>. There is no automatic submission channel on this page.</p></details></footer>
+</div>
+<script type="application/json" id="starting-edition">__EDITION__</script>
+<script>__CORE__</script>
+<script>__APP__</script>
+</body>
+</html>
