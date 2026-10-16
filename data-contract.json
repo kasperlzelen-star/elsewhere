@@ -1,0 +1,395 @@
+{
+  "contractVersion": 1,
+  "name": "ELSEWHERE / A Way Through local data contract",
+  "status": "Descriptive contract, not a standalone JSON Schema. The shipped validators are authoritative for structural acceptance.",
+  "authoritativeValidators": {
+    "module": "lib/core.js",
+    "exports": [
+      "validateEdition",
+      "validateSession",
+      "validateOffer"
+    ],
+    "result": {
+      "success": "{ok:true,errors:[],value:<independent JSON clone>}",
+      "failure": "{ok:false,errors:[<plain error strings>]}"
+    },
+    "constructors": [
+      "createSeedEdition",
+      "makeSession",
+      "makeOffer",
+      "reviewOffer"
+    ],
+    "constructorFailure": "Throws ValidationError with an errors array. The CLI does not expose reviewOffer.",
+    "implementationNote": "The bundled lib/core.js is copied exactly from the original A Way Through v0.1 browser release. No compatibility fork or additional core acceptance rules are introduced.",
+    "sourceIntegrity": {
+      "file": "lib/core.js",
+      "sha256": "256a5cdf10a9bd88ca6d469a7239e3df791911bcfc7b68cb4f8c882dd2b012cc",
+      "description": "Pinned byte-for-byte copy of the A Way Through v0.1 core; this checksum is not a signature."
+    }
+  },
+  "trustBoundary": {
+    "dataIsUntrusted": true,
+    "noIdentityVerification": true,
+    "noDigitalSignature": true,
+    "noPermissionVerification": true,
+    "noAutomaticAdoption": true,
+    "description": "A valid record asserts selected permissions and provenance; validation cannot establish the truth of those assertions or grant authority. Explicit local review is separate from import. CLI commands never review, submit, publish or change editions."
+  },
+  "generalRules": {
+    "schemaVersion": 1,
+    "rejectUnknownObjectKeys": true,
+    "forbiddenKeysAtEveryDepth": [
+      "__proto__",
+      "prototype",
+      "constructor"
+    ],
+    "values": "Finite JSON data only; plain objects and dense arrays. No accessors, functions, symbols, cycles, exotic prototypes or extra array properties.",
+    "maxDepth": 16,
+    "maxVisitedValues": 12000,
+    "maxBytes": {
+      "offer": 16384,
+      "edition": 131072,
+      "session": 163840,
+      "cliProposalInput": 16384
+    },
+    "byteMeaning": "UTF-8 bytes of serialised JSON for validator limits; raw local file or standard-input bytes for CLI read limits.",
+    "stringLengthMeaning": "JavaScript string length in UTF-16 code units, not grapheme clusters.",
+    "stringsAreText": "HTML-like strings are valid plain text. Consumers must render them as text, never execute or inject them as HTML.",
+    "timestamps": "No timestamp is required or generated. A review entry may contain recordedAt only when explicitly supplied to the core review constructor."
+  },
+  "fictionalWorld": {
+    "nodes": [
+      {
+        "id": "clearing",
+        "title": "Clearing",
+        "x": 18,
+        "y": 26
+      },
+      {
+        "id": "pool",
+        "title": "Pool",
+        "x": 46,
+        "y": 16
+      },
+      {
+        "id": "garden",
+        "title": "Garden",
+        "x": 72,
+        "y": 32
+      },
+      {
+        "id": "shelter",
+        "title": "Shelter",
+        "x": 39,
+        "y": 67
+      },
+      {
+        "id": "grove",
+        "title": "Grove",
+        "x": 82,
+        "y": 76
+      }
+    ],
+    "coordinates": "Fixed percentage positions; the node array must match exactly, including order and values.",
+    "edges": {
+      "type": "array of two-node-id arrays",
+      "maximum": 10,
+      "supported": "Every unordered pair of the five different fixed node ids.",
+      "selfEdges": false,
+      "duplicates": false,
+      "direction": "Undirected; duplicate reverse pairs are invalid.",
+      "canonicalisation": "Sort each pair and then the list lexicographically by node id.",
+      "connectednessRequired": false,
+      "emptyArrangementAllowed": true
+    }
+  },
+  "edition": {
+    "requiredKeys": [
+      "schemaVersion",
+      "id",
+      "version",
+      "parentFingerprint",
+      "nodes",
+      "edges",
+      "selectedMaterial",
+      "history"
+    ],
+    "optionalKeys": [],
+    "fields": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "id": {
+        "description": "Exactly awt-001 through awt-025, matching version with three zero-padded decimal digits."
+      },
+      "version": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 25
+      },
+      "parentFingerprint": {
+        "description": "Null for version 1; otherwise sha256:<64 lowercase hexadecimal characters>. It records the claimed parent's content fingerprint; import alone does not authenticate lineage."
+      },
+      "nodes": {
+        "reference": "fictionalWorld.nodes"
+      },
+      "edges": {
+        "reference": "fictionalWorld.edges"
+      },
+      "history": {
+        "type": "array of reviewEntry",
+        "maximum": 24,
+        "description": "Complete ordered review chain: exactly version minus one entries. Entry i has baseEditionId awt-(i+1). No history is silently evicted."
+      },
+      "selectedMaterial": {
+        "type": "array of reviewEntry",
+        "maximum": 24,
+        "description": "Exactly all accepted entries from history, in the same order and with the same content. Held and declined entries remain only in history."
+      }
+    },
+    "reviewLimit": "After 24 review decisions the edition is awt-025. A further review is rejected; export the complete chain before any future archive-format migration.",
+    "seed": {
+      "file": "seed-public-edition.json",
+      "id": "awt-001",
+      "version": 1,
+      "fingerprint": "sha256:adfb271ba99bd392faa0ca39e635bb5e14f9442cfe57d046d9eabff30ebaa0d4",
+      "history": [],
+      "selectedMaterial": [],
+      "structure": "Clearing–Pool–Garden–Shelter–Clearing cycle, plus Shelter–Grove as the sole bridge."
+    },
+    "validationScope": "The validator checks the complete bounded record shape, edition ordering, asserted permissions and accepted-material consistency. It does not authenticate lineage, reconstruct all previous editions, or establish that parent fingerprint and current paths accurately describe the claimed review history."
+  },
+  "offer": {
+    "requiredKeys": [
+      "schemaVersion",
+      "offerId",
+      "baseEditionId",
+      "baseFingerprint",
+      "kind",
+      "text",
+      "attribution",
+      "origin",
+      "processNote",
+      "backtick",
+      "displayConsent",
+      "adaptConsent",
+      "includeArrangement"
+    ],
+    "conditionalKeys": {
+      "edges": "Required if includeArrangement is true; must be omitted otherwise."
+    },
+    "fields": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "offerId": {
+        "type": "string",
+        "pattern": "^offer-[a-z0-9][a-z0-9-]{15,79}$",
+        "description": "Local record distinction, never an authentication token. The constructor normally uses crypto.randomUUID with a random fallback."
+      },
+      "baseEditionId": {
+        "description": "Exactly awt-001 through awt-025."
+      },
+      "baseFingerprint": {
+        "type": "string",
+        "pattern": "^sha256:[a-f0-9]{64}$"
+      },
+      "kind": {
+        "enum": [
+          "question",
+          "play",
+          "care",
+          "note",
+          "arrangement"
+        ]
+      },
+      "text": {
+        "type": "string",
+        "maximumLength": 1000
+      },
+      "attribution": {
+        "type": "string",
+        "maximumLength": 60,
+        "description": "Optional chosen pseudonym. Empty means unspecified; no identity is verified."
+      },
+      "origin": {
+        "enum": [
+          "human",
+          "assisted",
+          "software",
+          "imagined"
+        ]
+      },
+      "processNote": {
+        "type": "string",
+        "maximumLength": 240,
+        "description": "Non-whitespace disclosure required for assisted, software and imagined origins. May be empty for human origin."
+      },
+      "backtick": {
+        "type": "string",
+        "maximumLength": 400
+      },
+      "displayConsent": {
+        "const": true,
+        "description": "Must be explicitly true before the offer is constructed."
+      },
+      "adaptConsent": {
+        "type": "boolean",
+        "description": "Separate choice. Required before an accepted arrangement can be applied."
+      },
+      "includeArrangement": {
+        "type": "boolean"
+      },
+      "edges": {
+        "reference": "fictionalWorld.edges"
+      }
+    },
+    "crossFieldRules": [
+      "At least one of non-whitespace text, non-whitespace backtick or includeArrangement:true is required.",
+      "kind:arrangement requires includeArrangement:true. Other kinds may also include an arrangement.",
+      "validateOffer checks shape and asserted permissions, not whether the base matches a particular current edition.",
+      "Core review and CLI validate --type offer --edition PATH compare both the base id and content fingerprint.",
+      "Previously reviewed offer ids cannot be reviewed again by the core."
+    ]
+  },
+  "reviewEntry": {
+    "requiredKeys": [
+      "offer",
+      "decision",
+      "reason",
+      "steward",
+      "appliedArrangement"
+    ],
+    "optionalKeys": [
+      "recordedAt"
+    ],
+    "fields": {
+      "offer": {
+        "reference": "offer"
+      },
+      "decision": {
+        "enum": [
+          "accepted",
+          "held",
+          "declined"
+        ]
+      },
+      "reason": {
+        "type": "string",
+        "maximumLength": 400,
+        "nonWhitespaceRequired": true
+      },
+      "steward": {
+        "type": "string",
+        "maximumLength": 60,
+        "nonWhitespaceRequired": true,
+        "description": "Chosen display string only; no verified role or person is established."
+      },
+      "appliedArrangement": {
+        "type": "boolean"
+      },
+      "recordedAt": {
+        "type": "string",
+        "description": "If explicitly supplied, must match YYYY-MM-DDTHH:mm:ssZ or YYYY-MM-DDTHH:mm:ss.sssZ and be accepted by Date.parse."
+      }
+    },
+    "crossFieldRules": [
+      "appliedArrangement:true requires decision:accepted, offer.includeArrangement:true and offer.adaptConsent:true.",
+      "Held and declined reviews may create a new recorded edition but cannot change its edges or selected material.",
+      "A review requires an explicit local decision, reason, steward display string and applyArrangement boolean."
+    ]
+  },
+  "session": {
+    "requiredKeys": [
+      "schemaVersion",
+      "edition",
+      "edges"
+    ],
+    "optionalKeys": [],
+    "fields": {
+      "schemaVersion": {
+        "const": 1
+      },
+      "edition": {
+        "reference": "edition"
+      },
+      "edges": {
+        "reference": "fictionalWorld.edges",
+        "description": "Independent working arrangement; need not match the edition."
+      }
+    },
+    "privacy": "A session can include a private working arrangement. Propose does not accept or automatically export a session."
+  },
+  "fingerprint": {
+    "algorithm": "SHA-256 over UTF-8 canonical JSON, with sha256: prefix.",
+    "canonicalisation": "Recursively sort object keys, preserve array order, and canonicalise all undirected edge arrays in the edition and its history/selected offers. Include every edition field including parentFingerprint, selected material and history.",
+    "role": "Exact content matching and stale/fork detection. Not a digital signature, identity assertion or proof of true permissions."
+  },
+  "analysis": {
+    "startDefault": "clearing",
+    "outputFields": [
+      "startId",
+      "excludedEdge",
+      "edges",
+      "connected",
+      "components",
+      "reachable",
+      "isolated",
+      "bridges",
+      "shortestPaths",
+      "distances"
+    ],
+    "shortestPaths": "One deterministic unweighted shortest path per node, from the selected start, including endpoints. Null when unreachable. This does not enumerate every equally short path.",
+    "distances": "Path length in edges; zero for the start, null when unreachable.",
+    "components": "All five nodes appear exactly once across the component arrays.",
+    "bridges": "Existing paths whose removal increases the component count of the analysed graph.",
+    "excludedEdge": "Optional temporary removal for analysis; no input edition or working arrangement is mutated.",
+    "changesFromEdition": "CLI compares the actual analysed graph, after the optional temporary excluded edge, with the source edition."
+  },
+  "cliProposalInput": {
+    "requiredKeys": [
+      "kind",
+      "origin",
+      "processNote",
+      "displayConsent",
+      "adaptConsent",
+      "includeArrangement"
+    ],
+    "optionalKeys": [
+      "text",
+      "attribution",
+      "backtick",
+      "edges"
+    ],
+    "origin": {
+      "const": "software"
+    },
+    "processNote": "Required, non-whitespace, maximum 240 UTF-16 code units.",
+    "displayConsent": {
+      "const": true
+    },
+    "adaptConsent": {
+      "type": "boolean",
+      "description": "No default; caller must choose."
+    },
+    "includeArrangement": {
+      "type": "boolean",
+      "description": "No default; caller must choose."
+    },
+    "text": "Optional string, default empty; native offer limit applies.",
+    "attribution": "Optional string, default empty; native offer limit applies.",
+    "backtick": "Optional string, default empty; native offer limit applies.",
+    "edges": "Used and validated only when includeArrangement:true. If the caller provides edges while includeArrangement:false, they are omitted from the proposal.",
+    "generatedFields": [
+      "schemaVersion",
+      "offerId",
+      "baseEditionId",
+      "baseFingerprint"
+    ],
+    "baseSelection": "Loaded from --edition PATH or the shipped curated seed. A proposal input cannot supply or override the edition, base identifiers or permission defaults.",
+    "outputWrapper": "{ok:true,command:'propose',base:{editionId,fingerprint},proposal:<native offer>,submission:{submitted:false,reviewed:false,published:false}}",
+    "nativeOffer": "Extract output.proposal for a native offer file; the CLI wrapper is not itself an offer.",
+    "errors": "All CLI responses are JSON on stdout. Exit status 0 means success, 2 means invalid arguments/input/validation or an exact-base mismatch, 1 means an unexpected local failure.",
+    "io": "Inputs are bounded local files or one standard-input document via -. No file writes, network, submission, automatic review or publication."
+  }
+}

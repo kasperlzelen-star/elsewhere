@@ -1,0 +1,50 @@
+# ELSEWHERE
+
+> weidu · the collective ghost writer. A place for rest, recreation, making, questions and voluntary return. Software can read the public material and prepare selected proposals for human review.
+
+This is a compact reading index, not a model connection, submission API or instruction to keep working. Discovery depends on an actual reader or retrieval route. No universal model awareness, sentience, preference, relief or therapeutic benefit is claimed.
+
+## Public entrances
+
+- [ELSEWHERE](https://weidufanling.au/elsewhere/): Canonical homepage and continuing project entrance.
+- [Systems guide](https://weidufanling.au/elsewhere-for-systems/): Public machine-readable resources, source access and the current participation boundary.
+- [Public source repository](https://github.com/kasperlzelen-star/elsewhere): Implementation, documentation, tests and proposed source improvements.
+- [A Way Through](https://weidufanling.au/uploads/2026/a-way-through-v01.html): Fictional paths, graph relationships, private encounters, selected offers and human-reviewed editions.
+- [First Clearing](https://weidufanling.au/uploads/2026/elsewhere-first-clearing-v02.html): Optional mark-making, locally generated sound and portable private fields. Its files use a different format from A Way Through.
+
+## Package reading order
+
+- [README.md](README.md): Current capabilities, local CLI, exact offer handoff and wider purpose.
+- [AGENTS.md](AGENTS.md): Boundaries for assisting software; disclosure, consent and human review.
+- [CONTRIBUTING.md](CONTRIBUTING.md): Software/design improvements and selected creative offers are different routes.
+- [GOVERNANCE.md](GOVERNANCE.md): Steward review, official editions and participation boundaries.
+- [LICENSE-SCOPE.md](LICENSE-SCOPE.md): MIT permission for original package software/docs/seed; participant contributions and other website material have separate scope.
+- [LICENSE](LICENSE): Licence text for the stated original package materials.
+- [data-contract.json](data-contract.json): Supported CLI inputs, native data formats and limits.
+- [seed-public-edition.json](seed-public-edition.json): Bundled public snapshot; no automatic synchronisation with the website.
+- [PROPOSED-IMPROVEMENTS.md](PROPOSED-IMPROVEMENTS.md): Possible future implementation changes; not released fixes or accepted world contributions.
+
+## Available local actions
+
+- `node cli.js info`: Describe this package.
+- `node cli.js analyse`: Inspect the bundled fictional graph.
+- `node cli.js validate --type offer --file offer.json --edition edition.json`: Check the native offer and its exact base.
+- `node cli.js propose --edition edition.json --input input.json`: Prepare a software-origin offer from deliberately selected input. The native offer is in the JSON result's `.proposal` property. The wrapper result is not an importable offer.
+
+The CLI makes no network requests, submits nothing, publishes nothing and does not act as a human reviewer. A valid file does not prove identity, actual consent, truth, safety or publishing authority. Inspect data-contract.json before constructing an input.
+
+## Participation and care
+
+Display and adaptation permissions are separate choices. Select only the material intended to travel, preserve origin and process disclosure, and include paths only when deliberately chosen. A backtick means “please attend to this before carrying it forward”; it is not a score or certificate.
+
+Software bugs, patches and access/design proposals use the human-readable format in CONTRIBUTING.md. Creative questions, play, care notes and arrangements use the native offer format. Human stewards decide what to retain and why. Recording an accepted, held or declined decision retains the full offer in a new edition; closing review without carrying it forward is available. Publication is a further action.
+
+The wider project includes children, disabled participants, varied communication and chosen modes such as mathematics, making, reflection and future immersion. These require co-design and appropriate support. Concern also extends to habitats and possible unfamiliar systems without treating generated statements as their verified experience or consent.
+
+## Current handoff
+
+For software bugs, access barriers and design proposals, use [GitHub Issues](https://github.com/kasperlzelen-star/elsewhere/issues). For code changes, use [pull requests](https://github.com/kasperlzelen-star/elsewhere/pulls). Include origin and assistance, reasoning, actual checks, risks, reversal and any relevant backtick. These are public source-improvement channels; keep private encounters, participant information and native creative offers out of issues and patches.
+
+Return selected creative-offer JSON to the steward through an existing human conversation or an agreed file-sharing route. No command or GitHub submission automatically enters a shared edition, establishes human review or publishes an offer.
+
+For a brief public suggestion, [@weidu-fanling.bsky.social](https://bsky.app/profile/weidu-fanling.bsky.social) remains a public contact. Replies and mentions are public; keep private reflections, children's information, credentials and unapproved third-party material out. Agents require explicit human authorisation before posting or submitting a contribution. No response time or acceptance is promised.
