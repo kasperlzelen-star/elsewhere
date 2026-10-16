@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "awt-001",
+  "version": 1,
+  "parentFingerprint": null,
+  "nodes": [
+    {
+      "id": "clearing",
+      "title": "Clearing",
+      "x": 18,
+      "y": 26
+    },
+    {
+      "id": "pool",
+      "title": "Pool",
+      "x": 46,
+      "y": 16
+    },
+    {
+      "id": "garden",
+      "title": "Garden",
+      "x": 72,
+      "y": 32
+    },
+    {
+      "id": "shelter",
+      "title": "Shelter",
+      "x": 39,
+      "y": 67
+    },
+    {
+      "id": "grove",
+      "title": "Grove",
+      "x": 82,
+      "y": 76
+    }
+  ],
+  "edges": [
+    [
+      "clearing",
+      "pool"
+    ],
+    [
+      "clearing",
+      "shelter"
+    ],
+    [
+      "garden",
+      "pool"
+    ],
+    [
+      "garden",
+      "shelter"
+    ],
+    [
+      "grove",
+      "shelter"
+    ]
+  ],
+  "selectedMaterial": [],
+  "history": []
+}
