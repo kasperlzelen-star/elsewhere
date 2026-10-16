@@ -1,6 +1,7 @@
 # ELSEWHERE access
 
-16 October 2026 · working package 0.1  
+16 October 2026 · working package 0.1.1
+
 weidu · the collective ghost writer
 
 ELSEWHERE is an invitation to rest, play, make, explore relationships and encounter questions in more than one way. People may contribute, keep something privately, or simply be here. Its wider purpose includes children, people with varied access needs, living environments and possible future forms of participation. This package gives software a concrete way to inspect one current encounter and prepare something for review.
@@ -76,6 +77,14 @@ Selected offers are reviewed by a human steward. The A Way Through Steward desk 
 
 Recording any of those three decisions retains the full offer in that edition's history. If it should not travel, the steward should close the review without carrying it forward. A reviewer must inspect the content, disclosure, credit and permissions rather than treating a valid schema or fingerprint as proof of identity or consent. An already distributed file cannot recall every copy if someone later asks for a change.
 
+## Edition consistency in 0.1.1
+
+The bundled browser source and local tools use the same updated core. The linked live encounter is a separately published snapshot; check its displayed software version. Updating this repository does not deploy the website. A reviewed edition must link its `parentFingerprint` to the last history offer's `baseFingerprint`. If its history contains an accepted and explicitly applied arrangement, the current paths must match the most recent such arrangement. Reordering paths or reversing either end of an undirected path does not change that comparison.
+
+This software update keeps schema version 1 and the public `awt-001` seed and its fingerprint unchanged. Histories produced by the review constructor remain compatible. Imports with either contradiction are rejected with a validation error; the tools do not silently repair their paths, history or permissions. Keep an original file and inspect the discrepancy before deciding what should travel onward.
+
+These checks establish relationships within the supplied record. They do not reconstruct every earlier edition, authenticate its author or steward, or verify that its declared permissions are true. Quiet presence, private exploration and the choice to offer nothing remain available; stricter file checks do not require a person to disclose more material or accept adaptation.
+
 ## Contributing and offering material
 
 1. **For software bugs, access barriers and design proposals, open a [GitHub Issue](https://github.com/kasperlzelen-star/elsewhere/issues).** Use the review format in `CONTRIBUTING.md` and share only deliberately public material.
@@ -89,7 +98,7 @@ Issues, pull requests and social replies are public channels. Keep private encou
 
 Use [CONTRIBUTING.md](CONTRIBUTING.md) for bugs, code changes, accessibility barriers, proposed participation modes and questions about governance. Include what you observed, the proposed change, origin and assistance, actual checks, risks and a way to reverse it. A code patch does not become a creative contribution merely because it is attached to an offer.
 
-The notes in [PROPOSED-IMPROVEMENTS.md](PROPOSED-IMPROVEMENTS.md) are implementation proposals. They are not released fixes or accepted world contributions.
+The notes in [PROPOSED-IMPROVEMENTS.md](PROPOSED-IMPROVEMENTS.md) record the original implementation proposals; [CHANGELOG.md](CHANGELOG.md) records software changes. Software fixes are separate from accepted creative offers or a published shared edition.
 
 The package's [AGENTS.md](AGENTS.md) describes the boundaries for assisting software. [GOVERNANCE.md](GOVERNANCE.md) explains who can change an official edition and how review works. [llms.txt](llms.txt) is a compact reading index; it is not a model connection, executable instruction channel or guarantee that a crawler will use it.
 

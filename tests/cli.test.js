@@ -42,6 +42,23 @@ function assertInvalid(result, pattern) {
 function sampleOffer(edition = seed) {
   return Core.makeOffer({ edition, ...example });
 }
+function simulatedReviewedEdition() {
+  let edition = JSON.parse(JSON.stringify(seed));
+  for (const decision of ["accepted", "held"]) {
+    const proposal = Core.makeOffer({
+      edition, ...example, kind: "arrangement", includeArrangement: true,
+      edges: decision === "accepted" ? [["pool", "grove"]] : [],
+      adaptConsent: decision === "accepted",
+      text: "Simulated consistency diagnostic.",
+      processNote: "Generated regression fixture, not a participant account."
+    });
+    edition = Core.reviewOffer({
+      edition, offer: proposal, decision, reason: "Simulated local test decision.",
+      steward: "Simulated test steward", applyArrangement: decision === "accepted"
+    });
+  }
+  return edition;
+}
 
 test("info is machine-readable, names the curated seed and states its actual non-publishing capabilities", () => {
   const r = run(["info"], undefined, os.tmpdir());
@@ -190,6 +207,58 @@ test("validate handles every native data type and rejects malformed or claimed-a
     assertInvalid(run(["validate", "--type", "offer", "--file", "-"], raw), /forbidden key/);
   }
   assert.equal({}.polluted, undefined);
+});
+
+test("CLI rejects inconsistent reviewed editions across validation, analysis and proposal routes", (t) => {
+  const f = temp(t), edition = simulatedReviewedEdition();
+  const parentMismatch = JSON.parse(JSON.stringify(edition));
+  parentMismatch.parentFingerprint = "sha256:" + "0".repeat(64);
+  const pathsMismatch = JSON.parse(JSON.stringify(edition)); pathsMismatch.edges = [];
+  for (const [name, invalid, pattern] of [
+    ["parent", parentMismatch, /parentFingerprint/], ["paths", pathsMismatch, /edges/]
+  ]) {
+    const invalidPath = f.file(name + "-edition.json", invalid);
+    const before = fs.readFileSync(invalidPath, "utf8");
+    assertInvalid(run(["validate", "--type", "edition", "--file", invalidPath]), pattern);
+    assertInvalid(run(["validate", "--type", "session", "--file", "-"], {
+      schemaVersion: 1, edition: invalid, edges: []
+    }), pattern);
+    assertInvalid(run(["analyse", "--edition", invalidPath]), pattern);
+    assertInvalid(run(["propose", "--edition", invalidPath, "--input", "-"], example), pattern);
+    assertInvalid(run(["validate", "--type", "offer", "--file", "-", "--edition", invalidPath],
+      sampleOffer(edition)), pattern);
+    assert.equal(fs.readFileSync(invalidPath, "utf8"), before, "Rejected input is not silently repaired.");
+  }
+});
+
+test("CLI accepts a consistent reviewed edition and prepares an exact-base offer without adopting paths or granting permission", (t) => {
+  const f = temp(t), edition = simulatedReviewedEdition();
+  const editionPath = f.file("simulated-reviewed-edition.json", edition);
+  const before = fs.readFileSync(editionPath, "utf8");
+  const validated = run(["validate", "--type", "edition", "--file", editionPath]);
+  assert.equal(validated.status, 0);
+  assert.equal(validated.data.base.fingerprint, Core.fingerprint(edition));
+  const analysis = run(["analyse", "--edition", editionPath]);
+  assert.equal(analysis.status, 0);
+  assert.deepEqual(analysis.data.analysis.edges, [["grove", "pool"]]);
+  const session = run(["validate", "--type", "session", "--file", "-"], {
+    schemaVersion: 1, edition, edges: []
+  });
+  assert.equal(session.status, 0, "A working session can still explore different paths privately.");
+  const proposed = run(["propose", "--edition", editionPath, "--input", "-"], {
+    ...example, processNote: "Generated simulated compatibility check, not participant testimony.",
+    includeArrangement: true, edges: [], adaptConsent: false
+  });
+  assert.equal(proposed.status, 0);
+  assert.equal(proposed.data.proposal.baseEditionId, edition.id);
+  assert.equal(proposed.data.proposal.baseFingerprint, Core.fingerprint(edition));
+  assert.equal(proposed.data.proposal.adaptConsent, false);
+  assert.deepEqual(proposed.data.proposal.edges, []);
+  assert.deepEqual(proposed.data.submission, { submitted: false, reviewed: false, published: false });
+  const exact = run(["validate", "--type", "offer", "--file", "-", "--edition", editionPath], proposed.data.proposal);
+  assert.equal(exact.status, 0);
+  assert.deepEqual(exact.data.checks, { shape: true, exactBase: true });
+  assert.equal(fs.readFileSync(editionPath, "utf8"), before);
 });
 
 test("input selection rejects extra private fields and keeps script-like material as inert text", () => {
