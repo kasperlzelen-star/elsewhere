@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="A Way Through — an ELSEWHERE encounter. Wander, explore relationships, or freely offer something for a later edition.">
 <meta name="author" content="weidu">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-EVuSWu+sj0Ruq59l1WLBDnzBwhq0h62klTJEKn9wk2g='; script-src 'sha256-JWpc3xCpvYjKbUaacjnj33kZEbz8e2jLT4yILdKwEsw=' 'sha256-Ri5sGUnB2jFNWravGXrZJN0AaMcfCHVGvFV7njdPUvY='; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-EVuSWu+sj0Ruq59l1WLBDnzBwhq0h62klTJEKn9wk2g='; script-src 'sha256-E0+J05YTHL0azxPc5mJlSUnNUT8rNeHWrISNzyL+AQ4=' 'sha256-Ri5sGUnB2jFNWravGXrZJN0AaMcfCHVGvFV7njdPUvY='; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none';">
 <title>A Way Through · ELSEWHERE</title>
 <link rel="icon" href="data:,">
 <style>/* A Way Through · weidu. System fonts, still surfaces, no external assets. */
@@ -556,7 +556,7 @@ a.visually-hidden:focus {
 <div class="shell">
  <header class="masthead">
   <div class="identity"><a class="brand" href="https://weidufanling.au/elsewhere/">ELSEWHERE</a><span class="byline">weidu · the collective ghost writer</span></div>
-  <div class="edition"><strong>A WAY THROUGH · 0.1</strong><span>Working encounter / 16 October 2026</span></div>
+  <div class="edition"><strong>A WAY THROUGH · 0.1.1</strong><span>Working encounter / 16 October 2026</span></div>
  </header>
  <div class="edition-strip"><span id="edition-label"></span><button class="text-button" id="open-edition">Open another edition</button></div>
  <nav class="mode-nav" aria-label="Choose an entrance">
@@ -937,6 +937,16 @@ a.visually-hidden:focus {
       var accepted = e.history.filter(function (entry) { return entry && entry.decision === "accepted"; });
       if (stable(e.selectedMaterial) !== stable(accepted))
         errors.push(path + ".selectedMaterial must preserve every accepted review entry in order");
+    }
+    // Compare only structurally valid records. These relationships do not
+    // authenticate the review chain or the permissions asserted within it.
+    if (!errors.length && e.history.length) {
+      var latest = e.history[e.history.length - 1];
+      if (e.parentFingerprint !== latest.offer.baseFingerprint)
+        errors.push(path + ".parentFingerprint must match the latest history offer's baseFingerprint");
+      var applied = e.history.filter(function (entry) { return entry.appliedArrangement; }).pop();
+      if (applied && stable(orderedEdges(e.edges)) !== stable(orderedEdges(applied.offer.edges)))
+        errors.push(path + ".edges must match the latest explicitly applied arrangement in history");
     }
   }
   function result(raw, maxBytes, check) {
