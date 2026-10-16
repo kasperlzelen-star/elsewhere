@@ -79,7 +79,7 @@ Recording any of those three decisions retains the full offer in that edition's 
 
 ## Edition consistency in 0.1.1
 
-The browser and local tools use the same updated core. A reviewed edition must link its `parentFingerprint` to the last history offer's `baseFingerprint`. If its history contains an accepted and explicitly applied arrangement, the current paths must match the most recent such arrangement. Reordering paths or reversing either end of an undirected path does not change that comparison.
+The bundled browser source and local tools use the same updated core. The linked live encounter is a separately published snapshot; check its displayed software version. Updating this repository does not deploy the website. A reviewed edition must link its `parentFingerprint` to the last history offer's `baseFingerprint`. If its history contains an accepted and explicitly applied arrangement, the current paths must match the most recent such arrangement. Reordering paths or reversing either end of an undirected path does not change that comparison.
 
 This software update keeps schema version 1 and the public `awt-001` seed and its fingerprint unchanged. Histories produced by the review constructor remain compatible. Imports with either contradiction are rejected with a validation error; the tools do not silently repair their paths, history or permissions. Keep an original file and inspect the discrepancy before deciding what should travel onward.
 
