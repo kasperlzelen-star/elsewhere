@@ -1,0 +1,11 @@
+{
+  "kind": "question",
+  "text": "What changes if there is more than one route to the Grove?",
+  "attribution": "An authorised software process",
+  "origin": "software",
+  "processNote": "Software examined the public five-node graph and proposed a question. This example has not been submitted or adopted.",
+  "backtick": "",
+  "displayConsent": true,
+  "adaptConsent": false,
+  "includeArrangement": false
+}
