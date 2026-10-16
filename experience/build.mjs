@@ -28,7 +28,7 @@ const dist=path.join(root,'dist');fs.mkdirSync(dist,{recursive:true});
 const file=path.join(dist,'a-way-through-v01.html');fs.writeFileSync(file,html);
 fs.writeFileSync(path.join(dist,'a-way-through-edition-'+edition.id+'.json'),JSON.stringify(edition,null,2)+'\n');
 fs.writeFileSync(path.join(root,'build-record.json'),JSON.stringify({
-  version:'0.1.0',date:'2026-10-16',editionId:edition.id,editionFingerprint:C.fingerprint(edition),
+  version:require('./package.json').version,date:'2026-10-16',editionId:edition.id,editionFingerprint:C.fingerprint(edition),
   htmlSha256:crypto.createHash('sha256').update(html).digest('hex'),
   bytes:Buffer.byteLength(html),standalone:true,
   runtime:'No dependencies, external assets, network, persistent storage or connected model'
