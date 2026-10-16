@@ -1,6 +1,6 @@
 {
   "name": "elsewhere-access",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Read and analyse A Way Through editions and prepare explicitly selected, unsubmitted software proposals.",
   "type": "commonjs",

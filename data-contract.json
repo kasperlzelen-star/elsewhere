@@ -20,11 +20,11 @@
       "reviewOffer"
     ],
     "constructorFailure": "Throws ValidationError with an errors array. The CLI does not expose reviewOffer.",
-    "implementationNote": "The bundled lib/core.js is copied exactly from the original A Way Through v0.1 browser release. No compatibility fork or additional core acceptance rules are introduced.",
+    "implementationNote": "The bundled lib/core.js and experience/src/core.js share the A Way Through 0.1.1 core. This update adds reviewed-edition consistency checks while retaining schema version 1, the public seed and valid constructor-produced histories.",
     "sourceIntegrity": {
       "file": "lib/core.js",
-      "sha256": "256a5cdf10a9bd88ca6d469a7239e3df791911bcfc7b68cb4f8c882dd2b012cc",
-      "description": "Pinned byte-for-byte copy of the A Way Through v0.1 core; this checksum is not a signature."
+      "sha256": "134f89d396131cbd1acf13dce662654949cd513f2b35e1d6ac848dcf22fe010e",
+      "description": "Pinned byte-for-byte core shared by the local tools and browser source for 0.1.1; this checksum is not a signature."
     }
   },
   "trustBoundary": {
@@ -128,13 +128,14 @@
         "maximum": 25
       },
       "parentFingerprint": {
-        "description": "Null for version 1; otherwise sha256:<64 lowercase hexadecimal characters>. It records the claimed parent's content fingerprint; import alone does not authenticate lineage."
+        "description": "Null for version 1; otherwise sha256:<64 lowercase hexadecimal characters>, equal to the final history offer's baseFingerprint. This checks consistency of supplied claims; import alone does not authenticate lineage."
       },
       "nodes": {
         "reference": "fictionalWorld.nodes"
       },
       "edges": {
-        "reference": "fictionalWorld.edges"
+        "reference": "fictionalWorld.edges",
+        "description": "If history contains an accepted review with appliedArrangement:true, current paths must equal the most recent such offer's paths under undirected canonical comparison. With no applied arrangement, no original seed path set is inferred from history."
       },
       "history": {
         "type": "array of reviewEntry",
@@ -157,7 +158,7 @@
       "selectedMaterial": [],
       "structure": "Clearing–Pool–Garden–Shelter–Clearing cycle, plus Shelter–Grove as the sole bridge."
     },
-    "validationScope": "The validator checks the complete bounded record shape, edition ordering, asserted permissions and accepted-material consistency. It does not authenticate lineage, reconstruct all previous editions, or establish that parent fingerprint and current paths accurately describe the claimed review history."
+    "validationScope": "The validator checks the complete bounded record shape, edition ordering, asserted permissions, accepted-material consistency, the parent-to-latest-offer fingerprint relationship and current paths against the latest accepted/applied arrangement when present. Contradictory imports are rejected without silently repairing them. These checks do not authenticate lineage or permissions, reconstruct every earlier edition, or prove that all history assertions are true."
   },
   "offer": {
     "requiredKeys": [

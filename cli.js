@@ -95,7 +95,7 @@ function baseDescription(edition) {
 function makeInfo() {
   const edition = getEdition();
   return {
-    ok: true, command: "info", name: "elsewhere-access", version: "0.1.0",
+    ok: true, command: "info", name: "elsewhere-access", version: require("./package.json").version,
     purpose: "Read a curated fictional world, inspect its graph, and prepare an unsubmitted software-origin proposal.",
     files: {
       edition: "seed-public-edition.json", core: "lib/core.js",
